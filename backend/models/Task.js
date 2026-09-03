@@ -8,14 +8,22 @@ const taskSchema = new mongoose.Schema(
       trim: true,
       minlength: [2, "Title must contain at least 2 characters"],
     },
+    description: {
+      type: String,
+      required: [true, "Description is required"],
+      trim: true,
+    },
+    priority: {
+      type: String,
+      enum: ["Low", "Medium", "High"],
+      default: "Medium",
+    },
     completed: {
       type: Boolean,
       default: false,
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
 export default mongoose.model("Task", taskSchema);
