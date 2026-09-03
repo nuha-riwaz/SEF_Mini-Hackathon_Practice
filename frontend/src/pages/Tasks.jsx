@@ -5,6 +5,7 @@ import TaskForm from "../components/TaskForm.jsx";
 function Tasks() {
   const [tasks, setTasks] = useState([]);
   const [message, setMessage] = useState("");
+  const [filter, setFilter] = useState("All");
 
   const loadTasks = async () => {
     try {
@@ -41,20 +42,34 @@ function Tasks() {
     await loadTasks();
   };
 
+  const filteredTasks = tasks.filter((task) => {
+    if (filter === "Completed") return task.completed;
+    if (filter === "Pending") return !task.completed;
+    return true;
+  });
+
   return (
     <section>
       <TaskForm onCreate={createTask} />
 
       <div className="card">
-        <h2>Tasks</h2>
+        <div className="section-header">
+          <h2>Tasks</h2>
+
+          <select value={filter} onChange={(e) => setFilter(e.target.value)}>
+            <option>All</option>
+            <option>Pending</option>
+            <option>Completed</option>
+          </select>
+        </div>
 
         {message && <p className="error">{message}</p>}
 
-        {tasks.length === 0 ? (
-          <p>No tasks yet.</p>
+        {filteredTasks.length === 0 ? (
+          <p>No tasks found.</p>
         ) : (
           <div className="task-list">
-            {tasks.map((task) => (
+            {filteredTasks.map((task) => (
               <div className="task-item" key={task._id}>
                 <div>
                   <strong className={task.completed ? "completed" : ""}>
