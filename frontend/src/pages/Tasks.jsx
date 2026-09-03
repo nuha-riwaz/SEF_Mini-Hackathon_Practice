@@ -21,14 +21,17 @@ function Tasks() {
   }, []);
 
   const createTask = async (taskData) => {
-    try {
-      await api.post("/tasks", taskData);
-      setMessage("");
-      await loadTasks();
-    } catch (error) {
-      setMessage(error.response?.data?.message || "Could not create task");
-    }
-  };
+  try {
+    await api.post("/tasks", taskData);
+    setMessage("");
+    await loadTasks();
+  } catch (error) {
+    setMessage(
+      error.response?.data?.message ||
+      "Could not create task"
+    );
+  }
+};
 
   const toggleTask = async (task) => {
     await api.put(`/tasks/${task._id}`, {
