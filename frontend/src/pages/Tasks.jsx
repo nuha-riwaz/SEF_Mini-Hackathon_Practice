@@ -10,7 +10,7 @@ function Tasks() {
     try {
       const response = await api.get("/tasks");
       setTasks(response.data);
-    } catch (error) {
+    } catch {
       setMessage("Could not load tasks. Is the backend running?");
     }
   };
@@ -19,9 +19,9 @@ function Tasks() {
     loadTasks();
   }, []);
 
-  const createTask = async (title) => {
+  const createTask = async (taskData) => {
     try {
-      await api.post("/tasks", { title });
+      await api.post("/tasks", taskData);
       setMessage("");
       await loadTasks();
     } catch (error) {
@@ -30,24 +30,15 @@ function Tasks() {
   };
 
   const toggleTask = async (task) => {
-    try {
-      await api.put(`/tasks/${task._id}`, {
-        completed: !task.completed,
-      });
-
-      await loadTasks();
-    } catch (error) {
-      setMessage("Could not update task");
-    }
+    await api.put(`/tasks/${task._id}`, {
+      completed: !task.completed,
+    });
+    await loadTasks();
   };
 
   const deleteTask = async (id) => {
-    try {
-      await api.delete(`/tasks/${id}`);
-      await loadTasks();
-    } catch (error) {
-      setMessage("Could not delete task");
-    }
+    await api.delete(`/tasks/${id}`);
+    await loadTasks();
   };
 
   return (
@@ -65,19 +56,19 @@ function Tasks() {
           <div className="task-list">
             {tasks.map((task) => (
               <div className="task-item" key={task._id}>
-                <span className={task.completed ? "completed" : ""}>
-                  {task.title}
-                </span>
+                <div>
+                  <strong className={task.completed ? "completed" : ""}>
+                    {task.title}
+                  </strong>
+                  <p>{task.description}</p>
+                  <small>Priority: {task.priority}</small>
+                </div>
 
                 <div className="actions">
                   <button onClick={() => toggleTask(task)}>
                     {task.completed ? "Undo" : "Complete"}
                   </button>
-
-                  <button
-                    className="danger"
-                    onClick={() => deleteTask(task._id)}
-                  >
+                  <button className="danger" onClick={() => deleteTask(task._id)}>
                     Delete
                   </button>
                 </div>
